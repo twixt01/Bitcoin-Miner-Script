@@ -1,6 +1,6 @@
 This is a script that manages your bitcoin miners.
 
-This screen will start phoenix in a detached screen session, the screen sesion name is set to the MINER_ID-Miner as specified in the settings.
+This will start phoenix in a detached screen session, the screen sesion name is set to the MINER_ID-Miner as specified in the settings.
 
 For phoenix miner to work in a detached screen session, you should edit your ~/.screenrc and set teh appropriate environment variables, I have the following in my ~/.screenrc
 

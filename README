@@ -1,3 +1,65 @@
 This is a script that manages your bitcoin miners.
 
+This screen will start phoenix in a detached screen session, the screen sesion name is set to the MINER_ID-Miner as specified in the settings.
+
+For phoenix miner to work in a detached screen session, you should edit your ~/.screenrc and set teh appropriate environment variables, I have the following in my ~/.screenrc
+
+setenv LD_LIBRARY_PATH "/opt/AMD-APP-SDK-v2.4-lnx64/lib/x86_64/:/opt/ati-stream-sdk-v2.1-lnx64/lib/x86_64/"
+setenv DISPLAY ":0"
+
+--
+
+Logic/Thinking:
+
+This script uses a file hosted on your web server to figure out whre to "point" your miner to. It also checks to make sure that the Temperature of your GPU is under a set limit and that the LOAD on your GPU is above a specified threshold.
+
+IT requires that you have "WGET" installed and uses "sendemail" to send out email alerts. To install both of these packages, issue a apt-get install wget sendemail  
+
+* please notice that its sendEmail, not sendMail
+
+
+Run in a while loop:
+
+0) Kill any old instances of the miners that may be running (Cleanup)
+1) Fetch your control url
+2) If #1 fails, sleep and repeat the main while loop
+3) Check if miner is running, if not, start it using the address from step #1 above
+4) Check if the address currently in use is different from #1 
+5) if so, kill the currently running miner (when we loop next time, we start with new address)
+6) If address has not changed, check if Temp is under limit, if Temp > Threshold, kill miner
+7) Check Load, if load is under threshold, sleep 15 seconds
+8) Check Load again, if load is under threshold, kill miner, (When loop repeats, it will start miner)
+
+The recheck period is 10 seconds, and we recheck only under these conditions:
+
+* If miner wasn't running and we just restarted it
+* If the miner was killed because load was under specified threshhold
+
+Aside from those two conditions, the loop repeats in 300 seconds (5 minutes)
+
+
+Configuration:
+
+The configuration settings are at the top of the script, here is a bit more detailed description of everything
+
+CTRL_URL - this needs to point to something that returns a phoenix-friendly URL
+
+MINER_ID - this is an idintification string to differentiate different screen sessions for people that have multiple GPU's in one system
+ATICONFIG_ADAPTER_ID - this should contain an integer as you would specifiy for --adapter=X when running aticonfig for checking Temperature and Load
+
+PHOENIX_OPTIONS - this is an entire string of commands that you pass to the phoenix miner
+
+MIN_LOAD - if the load on the GPU drop below this limit, we'll kill the miner
+MAX_TEMP - if the temp reported by aticonfig goes above this limit, we'll kill the miner
+
+ENABLE_EMAIL - set this to 1 if you want to recieve spam/email alerts from your miner
+
+# some basic email settings
+FROM="user@host.com";
+TO="user@host.com";
+SMTP_SERVER="10.1.0.58:25";
+
+# Logging
+ENABLE_LOG=1;  # 1=enabled, anything else will disable it
+LOG="/tmp/Log-$MINER_ID.log"
 

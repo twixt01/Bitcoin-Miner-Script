@@ -174,9 +174,7 @@ while true; do
 	then
 		log "RECHECK requested, sleeping 10 seconds" 
 		sleep 10
-		log "ok, after sleep"
 	else
-		sleep 10
-		log "ok, after sleep"
+		sleep 300
 	fi
 done

@@ -2,7 +2,7 @@ This is a script that manages your bitcoin miners.
 
 This will start phoenix in a detached screen session, the screen sesion name is set to the MINER_ID-Miner as specified in the settings.
 
-For phoenix miner to work in a detached screen session, you should edit your ~/.screenrc and set teh appropriate environment variables, I have the following in my ~/.screenrc
+For phoenix miner to work in a detached screen session, you should edit your ~/.screenrc and set the appropriate environment variables, I have the following in my ~/.screenrc
 
 setenv LD_LIBRARY_PATH "/opt/AMD-APP-SDK-v2.4-lnx64/lib/x86_64/:/opt/ati-stream-sdk-v2.1-lnx64/lib/x86_64/"
 setenv DISPLAY ":0"
@@ -11,16 +11,16 @@ setenv DISPLAY ":0"
 
 Logic/Thinking:
 
-This script uses a file hosted on your web server to figure out whre to "point" your miner to. It also checks to make sure that the Temperature of your GPU is under a set limit and that the LOAD on your GPU is above a specified threshold.
+This script uses a file hosted on your web server to figure out where to "point" your miner to. It also checks to make sure that the Temperature of your GPU is under a set limit and that the LOAD on your GPU is above a specified threshold.
 
-IT requires that you have "WGET" installed and uses "sendemail" to send out email alerts. To install both of these packages, issue a apt-get install wget sendemail  
+IT requires that you have wget and sendemail installed. To install both of these packages, issue a apt-get install wget sendemail  
 
 * please notice that its sendEmail, not sendMail
 
 
-Run in a while loop:
+Here's what it does, run in a infinite while loop:
 
-0) Kill any old instances of the miners that may be running (Cleanup)
+0) Kill any old instances of the miners that may be running (Cleanup) and start the while loop from #1 below
 1) Fetch your control url
 2) If #1 fails, sleep and repeat the main while loop
 3) Check if miner is running, if not, start it using the address from step #1 above

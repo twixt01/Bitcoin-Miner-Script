@@ -17,8 +17,8 @@ MIN_LOAD=95; # if load drops below this, we'll restart miner
 MAX_TEMP=85; # if temps go above this, we'll kill the miner
 
 ENABLE_EMAIL=1;	# 1=enabled, anything else will disable it
-FROM="sidhu.j@gmail.com";
-TO="sidhu.j@gmail.com";
+FROM="user@host.com";
+TO="user@host.com";
 SMTP_SERVER="10.1.0.58:25";
 
 # Logging

@@ -4,19 +4,19 @@
 ############################################################
 
 ## Url of our control file - should contain the pool address in http://user:pass@host:port format
-CTRL_URL="http://10.1.5.8/bitcoind.txt";
+CTRL_URL="http://sample.com/p.txt";
 
 MINER_ID="GPU0";  # IMPORTANT, If you have more than 1 gpu/miner, increment this accordinly
 ATICONFIG_ADAPTER_ID=0;  # Same, this is requierd to fetch the LOAD & TEMP
 
 ## Settings/commandline for the phoenix miner
-PHOENIX_OPTIONS="-q 2 -k poclbm VECTORS BFI_INT FASTLOOP=false AGGRESSION=11 DEVICE=1 PLATFORM=1";
+PHOENIX_OPTIONS="-q 2 -k phatk VECTORS BFI_INT FASTLOOP=false AGGRESSION=12 DEVICE=5";
 
 ## Minimum Load and Maximum Temp 
-MIN_LOAD=95; # if load drops below this, we'll restart miner
+MIN_LOAD=30; # if load drops below this, we'll restart miner
 MAX_TEMP=85; # if temps go above this, we'll kill the miner
 
-ENABLE_EMAIL=1;	# 1=enabled, anything else will disable it
+ENABLE_EMAIL=0;	# 1=enabled, anything else will disable it
 FROM="user@host.com";
 TO="user@host.com";
 SMTP_SERVER="10.1.0.58:25";
@@ -63,7 +63,7 @@ killPID()
 	log "KillPID: $PID"
 	if [ "$PID" -gt 0 ]
 	then
-		kill -9 $PID
+		sudo kill -9 $PID
 		RESULT=$?
 		log "trying to kill -9 $PID result:$RESULT"
 	else
@@ -97,19 +97,25 @@ RECHECK=0;
 # kill any running instances
 killOldMiners
 while true; do
-	SERVER=`wget -qO- "$CTRL_URL"`
+	SERVER=`sudo wget -qO- "$CTRL_URL"`
 	RESULT=$?
 	PROCEED=0;
+
 	if [ "$RESULT" -eq "0" ]
+
 	then
-		if [[ $SERVER == *http* ]]
-		then
+#need to fix this if statement!
+		#if [ $SERVER == *http* ]
+		#then
+	echo http correct
 			PROCEED=1;
-		fi
+		#fi
+
 	fi
 
 	if [ "$PROCEED" -eq "1" ]
 	then
+echo starting
 		# we are good to go
 		########################################################################
 		isMinerRunning $UNIQID;
@@ -119,7 +125,9 @@ while true; do
 			# MINER NOT RUNNING
 			log "Miner is not running, starting"
 			log "Launching screen: screen -dmS $UNIQID ./phoenix.py -u $SERVER $PHOENIX_OPTIONS"
-			screen -dmS $UNIQID ./phoenix.py -u $SERVER $PHOENIX_OPTIONS
+						
+			 screen -dmS $UNIQID ./phoenix.py -u $SERVER $PHOENIX_OPTIONS
+			
 			sendMail "$MINER_ID not running, starting $UNIQID" "Miner was not running, started..."
 			CURRENT="$SERVER"
 			RECHECK=1

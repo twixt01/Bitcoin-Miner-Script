@@ -2,7 +2,7 @@
 ############################################################
 ##### SETTINGS                                          ####
 ############################################################
-sudo chmod 777 /var/run/screen
+
 ## Url of our control file - should contain the pool address in http://user:pass@host:port format
 CTRL_URL="http://sample.com/p.txt";
 
@@ -17,9 +17,13 @@ MIN_LOAD=30; # if load drops below this, we'll restart miner
 MAX_TEMP=85; # if temps go above this, we'll kill the miner
 
 ENABLE_EMAIL=0;	# 1=enabled, anything else will disable it
+#Properly preset for gmail smtp
 FROM="user@host.com";
 TO="user@host.com";
-SMTP_SERVER="10.1.0.58:25";
+SMTP_SERVER="smtp.gmail.com:587";
+smtpuser="dddd@gmail.com";
+smtppass="password";
+tls="yes"; #yes/auto/no
 
 # Logging
 ENABLE_LOG=1;  # 1=enabled, anything else will disable it
@@ -48,9 +52,11 @@ sendMail()
 	### ARGS:
 	###		$1 - subject
 	###		$2 - mesage
+	###		$smtpuser
+    	###		$smtppass 
 	if [ "$ENABLE_EMAIL" -eq "1" ]
 	then
-		sendemail -f "$FROM" -t "$TO" -u "$1" -m "$2" -s "$SMTP_SERVER"
+		sendEmail -f "$FROM" -t "$TO" -u "$1" -m "$2" -s "$SMTP_SERVER" -o tls="$tls" -xu "$smtpuser" -xp "$smtppass"
 	fi
 }
 
@@ -94,7 +100,7 @@ isMinerRunning()
 
 CURRENT="";
 RECHECK=0;
-# kill any running instances
+# kill any running instances 
 killOldMiners
 while true; do
 	SERVER=`sudo wget -qO- "$CTRL_URL"`

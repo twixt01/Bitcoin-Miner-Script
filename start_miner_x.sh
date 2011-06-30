@@ -2,7 +2,7 @@
 ############################################################
 ##### SETTINGS                                          ####
 ############################################################
-
+sudo chmod 777 /var/run/screen
 ## Url of our control file - should contain the pool address in http://user:pass@host:port format
 CTRL_URL="http://sample.com/p.txt";
 
